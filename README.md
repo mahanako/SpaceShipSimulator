@@ -1,2 +1,2 @@
 # SpaceShipSimulator
-We will make the simulator great again
+We will make the simulation game great again
