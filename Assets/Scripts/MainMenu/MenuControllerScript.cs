@@ -12,4 +12,9 @@ public class MenuControllerScript : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public void StartGameScene() {
+        Application.LoadLevel("gameScene");
+    }
+
 }
