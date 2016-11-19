@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class MenuControllerScript : MonoBehaviour {
 
@@ -14,7 +15,8 @@ public class MenuControllerScript : MonoBehaviour {
 	}
 
     public void StartGameScene() {
-        Application.LoadLevel("gameScene");
+        SceneManager.LoadScene("gameScene", LoadSceneMode.Single);
+        //Application.LoadLevel("gameScene");
     }
 
 }
