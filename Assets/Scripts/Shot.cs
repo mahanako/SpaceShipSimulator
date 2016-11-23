@@ -7,6 +7,7 @@ public class Shot : MonoBehaviour {
     public float power = 100;
     public float decay = 5;
     public float decay_step_seconds = 0.3f;
+    public float currentPower { get { return current_power; } }
     private float current_power;
     private float next_decay;
     private Vector3 spawnpoint;
@@ -26,7 +27,7 @@ public class Shot : MonoBehaviour {
 
         next_decay = Time.time + decay_step_seconds;
         current_power -= decay;
-        Debug.LogFormat("Spawnpoint: {0}, Position: {1}, power: {2}", spawnpoint, transform.position, current_power);
+        //Debug.LogFormat("Spawnpoint: {0}, Position: {1}, power: {2}", spawnpoint, transform.position, current_power);
         if (current_power <= 0)
             Destroy(gameObject);
     }

@@ -3,17 +3,25 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-    public float speed = 10;
-    public float angular_speed = 10;
+    public float max_speed = 5;
+    public float acceleration = 0.3f;
+    public float angular_speed = 100;
 
     public GameObject shot;
     public Transform shotspawn;
-    public float firerate;
+    public float firerate = 0.25f;
     private float nextfire;
+    private float nextacceleration;
+    private float current_speed;
+    private Rigidbody r;
+    private ParticleSystem p;
+
 
     // Use this for initialization
     void Start () {
-	
+        r = GetComponent<Rigidbody>();
+        p = GetComponentInChildren<ParticleSystem>();
+        current_speed = 0;
 	}
 	
 	// Update is called once per frame
@@ -24,15 +32,34 @@ public class PlayerController : MonoBehaviour {
             AudioSource audio = GetComponent<AudioSource>();
             audio.Play();
         }
-
+        if (Input.GetButton("Fire2") && Time.time > nextacceleration) {
+            nextacceleration = Time.time + acceleration;
+            current_speed += acceleration;
+        }
+        if (Input.GetButton("Fire3") && Time.time > nextacceleration) {
+            nextacceleration = Time.time + acceleration;
+            current_speed -= acceleration;
+        }
+        if (current_speed > max_speed)
+            current_speed = max_speed;
+        if (current_speed < 0)
+            current_speed = 0;
+        if (current_speed == 0)
+            p.Stop();
+        else
+            p.Play();
+        
     }
 
     void FixedUpdate() {
-        float translation = Input.GetAxis("Vertical") * speed;
-        float rotation = Input.GetAxis("Horizontal") * angular_speed;
-        translation *= Time.deltaTime;
-        rotation *= Time.deltaTime;
-        transform.Translate(0, 0, translation);
-        transform.Rotate(0, rotation, 0);
+        //float translation = Input.GetAxis("Vertical") * speed;
+        float roll = Input.GetAxis("Horizontal") * angular_speed;
+        float pitch = Input.GetAxis("Vertical") * angular_speed;
+        //translation *= Time.deltaTime;
+        roll *= Time.deltaTime;
+        pitch *= Time.deltaTime;
+        //transform.Translate(0, 0, translation);
+        transform.Rotate(pitch, 0, -roll);
+        r.velocity = transform.forward * current_speed;
     }
 }
