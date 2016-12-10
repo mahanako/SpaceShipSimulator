@@ -28,25 +28,25 @@ public class CameraRig : MonoBehaviour {
             switch (mode) {
             case Mode.Following:
                 mode = Mode.Fixed;
+                transform.rotation = Quaternion.identity;
                 transform.SetParent(null);
-                transform.rotation = new Quaternion(0, 0, 0, 0);
                 break;
             case Mode.Fixed:
                 mode = Mode.Free;
+                transform.rotation = Quaternion.identity;
                 transform.SetParent(null);
-                transform.rotation = new Quaternion(0, 0, 0, 0);
                 break;
             case Mode.Free:
                 mode = Mode.Cockpit;
                 transform.SetParent(player.transform);
-                transform.position = new Vector3(0, 0.31f, -0.34f);
-                transform.rotation = new Quaternion(0.71f, 0, 0, 0);
+                transform.localPosition = new Vector3(0, 0.26f, -.38f);
+                transform.localRotation = Quaternion.identity;
                 break;
             case Mode.Cockpit:
                 mode = Mode.Following;
                 transform.SetParent(player.transform);
-                transform.position = new Vector3(0, 0, -2.34f);
-                transform.rotation = new Quaternion(0, 0, 0, 0);
+                transform.localPosition = new Vector3(0, 1.1f, -3.1f);
+                transform.localRotation = Quaternion.identity;
                 break;
             }
         }
@@ -57,7 +57,6 @@ public class CameraRig : MonoBehaviour {
     void LateUpdate() {
         switch (mode) {
         case Mode.Following:
-            //transform.position = player.transform.position + offset;
             break;
         case Mode.Fixed:
             transform.position = player.transform.position + offset;
