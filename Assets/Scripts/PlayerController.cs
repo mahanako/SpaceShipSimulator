@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButton("Fire1") && Time.time > nextfire) {
             nextfire = Time.time + firerate;
             Instantiate(shot, shotspawn.position, shotspawn.rotation);
-            AudioSource audio = GetComponent<AudioSource>();
+            AudioSource audio = GetComponents<AudioSource>()[0];
             audio.Play();
         }
         if (Input.GetButton("Fire2") && Time.time > nextacceleration) {
@@ -44,11 +44,20 @@ public class PlayerController : MonoBehaviour {
             current_speed = max_speed;
         if (current_speed < 0)
             current_speed = 0;
-        if (current_speed == 0)
+
+        if (current_speed == 0) {
+            AudioSource audio = GetComponents<AudioSource>()[1];
+            audio.Stop();
             p.Stop();
-        else
+        }
+        else {
+            AudioSource audio = GetComponents<AudioSource>()[1];
+            audio.volume = current_speed / max_speed;
+            audio.pitch = current_speed / max_speed;
+            if (!audio.isPlaying)
+                audio.Play();
             p.Play();
-        
+        }
     }
 
     void FixedUpdate() {
