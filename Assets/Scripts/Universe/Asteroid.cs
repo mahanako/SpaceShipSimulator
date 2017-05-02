@@ -3,36 +3,71 @@ using System.Collections;
 
 public class Asteroid : MonoBehaviour {
 
+    public float Size = 1;
+    public float SpeedNumerator = .3f;
+    public GameObject small_explosion;
+    public GameObject big_explosion;
+    public GameObject asteroid1;
+    public GameObject asteroid2;
+    public GameObject asteroid3;
+    private float hitpoints;
+
 	// Use this for initialization
 	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        setSize(Size);
+    }
+
+    void setSize(float newSize) {
+        Size = newSize;
+        hitpoints = Size * 100;
+        transform.localScale *= Size;
+        GetComponent<Rigidbody>().mass = Size;
+    }
+
+    // Update is called once per frame
+    void Update () {
         transform.Rotate(0.1f, 0.1f, 0.1f);
     }
 
+    void OnCollisionEnter(Collision collision) {
+        Collider other = collision.collider;
+        if (other.tag != "Shot")
+            return;
+
+        Instantiate(small_explosion, collision.transform.position, collision.transform.rotation);
+        Shot shot = other.GetComponentInParent<Shot>();
+        hitpoints -= shot.currentPower;
+        Destroy(other.gameObject);
+
+        if (hitpoints > 0)
+            return;
+
+        Instantiate(big_explosion, transform.position, transform.rotation);
+        if (Size > 1)
+            BreakAsteroid(Size / 3);
+        else
+            Destroy(gameObject);
+    }
 
     /// <summary>
-    /// Breaks an asteorid into pieces
+    /// Breaks an asteroid into pieces
     /// </summary>
-    public void BreakAsteroid() {
-        Debug.Log("Breaking the Asteorid!");
-        for (int i = 0 ; i < transform.childCount ; i++) {
-            transform.GetChild(i).gameObject.AddComponent<BoxCollider>();
+    public void BreakAsteroid(float newSize) {
+        GameObject o;
+        float speed = SpeedNumerator / newSize;
 
-            // If the child object has a MapSymbol, turn it active
-            Transform mapSymbolTransform = transform.GetChild(i).transform.FindChild("MapSymbol");
-            if (mapSymbolTransform != null)
-                mapSymbolTransform.gameObject.SetActive(true);            
-            Rigidbody rigidBody = transform.GetChild(i).gameObject.AddComponent<Rigidbody>();
-            rigidBody.mass = 1;
-            rigidBody.useGravity = false;
-            transform.GetChild(i).parent = transform.parent;
-            // TODO add the Asteorids to the List of Objects in the Solar System
-        }
-        //transform.DetachChildren();   // Since children got a new Parent...
+        o = (GameObject)Instantiate(asteroid1, transform.position, transform.rotation);
+        o.GetComponent<Asteroid>().setSize(newSize);
+        o.GetComponent<Rigidbody>().velocity = transform.forward * speed;
+
+        o = (GameObject)Instantiate(asteroid2, transform.position, transform.rotation);
+        o.GetComponent<Asteroid>().setSize(newSize);
+        o.GetComponent<Rigidbody>().velocity = transform.right * speed;
+
+        o = (GameObject)Instantiate(asteroid3, transform.position, transform.rotation);
+        o.GetComponent<Asteroid>().setSize(newSize);
+        o.GetComponent<Rigidbody>().velocity = transform.up * speed;
+
         Destroy(gameObject);
     }
 
